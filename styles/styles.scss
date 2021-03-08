@@ -1,49 +1,60 @@
-body {
-    margin: 0;
+html, body {
+    height: 100%;
+  }
+  
+  body {
+    min-height: 100%;
     overflow: hidden;
+    background: black;
+    background: radial-gradient(circle at center, #222, black 30%);
+    
   }
   
-  .background {
-    width: 100vw;
-    height: 100vh;
-    background: #3E1E68;
+  .wrap {
+    height: 100%;
+    min-height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    perspective: 500px;
+   
   }
   
-  $particleSize: 20vmin;
-  $animationDuration: 6s;
-  $amount: 20;
-  .background span {
-    width: $particleSize;
-    height: $particleSize;
-    border-radius: $particleSize;
-    backface-visibility: hidden;
+  @function posOrNeg(){
+    @return random() * 2 - 1;
+  }
+  
+  
+  $total: 200;
+  $size: 30;
+  
+  .c {
     position: absolute;
-    animation-name: move;
-    animation-duration: $animationDuration;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-    $colors: (
-      #583C87,
-      #E45A84,
-      #FFACAC
-    );
-    @for $i from 1 through $amount {
-      &:nth-child(#{$i}) {
-        color: nth($colors, random(length($colors)));
-        top: random(100) * 1%;
-        left: random(100) * 1%;
-        animation-duration: (random($animationDuration * 10) / 10) * 1s + 10s;
-        animation-delay: random(($animationDuration + 10s) * 10) / 10 * -1s;
-        transform-origin: (random(50) - 25) * 1vw (random(50) - 25) * 1vh;
-        $blurRadius: (random() + 0.5) * $particleSize * 0.5;
-        $x: if(random() > 0.5, -1, 1);
-        box-shadow: ($particleSize * 2 * $x) 0 $blurRadius currentColor;
-      }
-    }
+    width: $size+px;
+    height: $size+px;
+    margin-top: -$size/2+px;
+    margin-left: -$size/2+px;
+    transform: translate3d(50vw,50vh, -1000px);
+    border-radius: 50%;
   }
   
-  @keyframes move {
-    100% {
-      transform: translate3d(0, 0, 1px) rotate(360deg);
+  @for $i from 1 through $total {
+    $color: hsl(($i * .1)+70, 100%, 50%);
+    
+    .c:nth-child(#{$i}){
+      animation: anim#{$i} 1.5s infinite alternate;
+      animation-delay: $i * -.015s;
+      background: $color;
+      background: radial-gradient(circle at top left, lighten($color, 15%), $color);
+      box-shadow: 0 0 25px 3px lighten($color, 5%);
+      border: 1px solid $color;
+    }
+    @keyframes anim#{$i}{
+      80% {
+        opacity: 1;
+      }
+      100% {
+        transform: translate3d(random(100)+vw, random(100)+vh, 0);
+        opacity: 0;
+      }
     }
   }
